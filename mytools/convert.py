@@ -1,7 +1,7 @@
 import paddle
 from collections import OrderedDict
 
-paddleseg = paddle.load("track1/pretrained/convnext_large.pdparams")
+paddleseg = paddle.load("track1/pretrained/convnext_xlarge.pdparams")
 
 
 covert_model_list = []

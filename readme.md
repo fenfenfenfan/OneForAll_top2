@@ -14,11 +14,12 @@
 
 ```shell
 config：训练推理所用网络配置文件
-evaluation-evaluator.py：检测、分类任务TTA
-evaluation-seg_evaluator.py：分割TTA
-modeling-heads-simple_cls_head.py：分类头
-modeling-heads-mask2former：分割头
-script：训练测试脚本
+datasets: 数据集
+outputs: 运行结果及log文件
+pretrained: 预训练权重
+scripts: 训练测试脚本
+modeling: 模型结构
+tools: 后处理代码
 ```
 
 ## 2.数据增强/清洗策略
@@ -184,7 +185,7 @@ best模型地址：链接：https://pan.baidu.com/s/1gcLch2TtU38ZSoh929ND7Q 提�
 
 预训练权重：链接：https://pan.baidu.com/s/1Zf4uowNNiOv9L07N86Wd2A 提取码：rnbh 
 
-convext-xl预训练模型下载地址https://github.com/BR-IDL/PaddleViT，convert代码在my_tools/convert.py
+convext-xl预训练模型下载地址：https://github.com/BR-IDL/PaddleViT，convert代码在my_tools/convert.py
 
 训练测试的log在track1/outputs
 

@@ -240,6 +240,52 @@ bash scripts/train.sh
 
 ## 5.训练/测试脚本
 
+`数据集说明`
+
+全量数据训练，数据集放在datasets/下
+
+说明：
+
+1.cls、dec、seg都是使用全量数据训练，复现时需要将验证集和训练集合并
+
+2.dec中的merge_train.json为检测数据集的训练验证集合并，放在/datasets里
+
+3.cls、seg通过手动复制即可整合训练验证集
+
+```python
+# 数据集目录
+--datasets
+	--track1_train_data
+		--cls
+        	--train
+            --val
+            train.txt
+            val.txt
+		--dec
+        	--train
+            --val
+            merge_train.json
+            train.json
+            val.json
+		--seg
+        	images
+            	train
+                val
+            label
+            	train
+                val
+	--track1_test_data
+		--cls
+        	--test
+		--dec
+        	--test
+            test.txt
+            val.json
+		--seg      
+        	--images
+            	--test
+```
+
 `训练脚本`
 
 训练测试的log在track1/outputs

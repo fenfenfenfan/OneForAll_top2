@@ -211,7 +211,7 @@ convext-xl预训练模型下载地址, convert代码在my_tools/convert.py：htt
 
 注意：本项目基于A100-80g*8，如果使用**更少数量**的显卡，除了需要更改scripts/.sh文件中的gpus_id，还需要**线性缩小**train_config中的学习率。
 
-1.安装requirements.txt
+1.安装requirements.txt，如果pip3 install -r requirements.txt安装不成功的话，运行指令python3 install.py
 
 2.安装paddlepaddle-gpu，链接：https://pan.baidu.com/s/1sQwcbmQmWlTOuTNUqk6BRg 提取码：kair
 

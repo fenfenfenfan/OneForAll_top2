@@ -179,31 +179,76 @@ optimizer.lr_multiplier.solver_steps = [int(max_iters * 0.8)]
 | +det seg cls tta | more scale+wbf   | 0.8709    |
 | +det seg cls tta | low thr+wbf+clip | 0.8712    |
 
-## 4.训练/测试脚本
+## 4.环境配置
 
 best模型地址：链接：https://pan.baidu.com/s/1gcLch2TtU38ZSoh929ND7Q 提取码：h8n3 
 
 预训练权重：链接：https://pan.baidu.com/s/1Zf4uowNNiOv9L07N86Wd2A 提取码：rnbh 
 
-convext-xl预训练模型下载地址：https://github.com/BR-IDL/PaddleViT，convert代码在my_tools/convert.py
+convext-xl预训练模型下载地址, convert代码在my_tools/convert.py：https://github.com/BR-IDL/PaddleViT
 
-训练测试的log在track1/outputs
+训练时使用**全量数据**进行训练，需要合并原始的train、val数据集
+
+`环境依赖`
+
+> A100-80g*8
+>
+> python3.7.3
+>
+> CUDA11.3（nvcc -V指令查看）
+>
+> 系统Debian 10.11（lsb_release -a查看）
+
+以下环境也能运行成功
+
+> 3090*4
+>
+> python3.7.3
+>
+> CUDA11.2（nvcc -V指令查看）
+>
+> 系统Ubuntu20.04.1
+
+注意：本项目基于A100-80g*8，如果使用**更少数量**的显卡，除了需要更改scripts/.sh文件中的gpus_id，还需要**线性缩小**train_config中的学习率。
+
+1.安装requirements.txt
+
+2.安装paddlepaddle-gpu，链接：https://pan.baidu.com/s/1sQwcbmQmWlTOuTNUqk6BRg 提取码：kair
+
+3.安装ms_deform_attn算子，安装完成后可能会报opencv-python的错误，需要pip3 uninstall opencv-python，然后重新安装requirements.txt中的opencv-python版本
+
+4.运行程序
+
+具体如下：
+
+```python
+# requirements
+cd track1
+pip3 install -r requirements.txt
+
+# cd到paddlepaddle-gpu路径下
+pip3 install paddlepaddle_gpu-2.3.2.post111-cp37-cp37m-linux_x86_64.whl.whl
+
+# build ms_deform_attn
+cd ./PaddleSeg/contrib/PanopticSeg/paddlepanseg/models/ops/ms_deform_attn
+python3 setup.py install
+
+# train
+cd track1
+bash scripts/train.sh
+```
+
+## 5.训练/测试脚本
 
 `训练脚本`
+
+训练测试的log在track1/outputs
 
 正式训练前将预训练权重放在pretrained/
 
 训练结果保存在outputs/train_convxl_m2f_e60_revise_dino256_pre_aug1_v2_1280_mosaic_noseg/
 
 ```shell
-# build env
-cd track1
-pip3 install -r requirements.txt
-
-# build ms_deform_attn
-cd ./PaddleSeg/contrib/PanopticSeg/paddlepanseg/models/ops/ms_deform_attn
-python3 setup.py install
-
 # train
 cd track1
 bash scripts/train.sh
@@ -223,7 +268,7 @@ python3 tools/wbf.py
 
 ```
 
-## 5.感谢
+## 6.感谢
 
 https://github.com/BR-IDL/PaddleViT
 

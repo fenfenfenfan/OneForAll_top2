@@ -37,38 +37,38 @@ seg_num_classes=19
 dataloader.train=L(MultiTaskDataLoader)(
     cfg=dict(sample_mode='batch',),
     task_loaders=L(OrderedDict)(
-        segmentation=L(build_segmentation_trainloader)(
-            data_set=L(build_segmentation_dataset)(
-                    dataset_name="BDD100K",
-                    dataset_root=_root + '/track1_train_data/seg/', 
-                    transforms=[
-                        # L(Mosaic)(prob=0.2, input_dim=[1280, 720]), # seg head no need to use mosaic
-                        L(ResizeStepScaling)(min_scale_factor=0.5, max_scale_factor=2.0, scale_step_size=0.25), 
-                        L(RandomPaddingCrop)(crop_size=[1280, 720]), 
-                        L(RandomHorizontalFlip)(), 
-                        L(One_of_aug)(method = [  # transform img and mask, rorate(low rato) or shift(high rato)
-                                    A.Rotate (limit=5, p=0.1), 
-                                    A.ShiftScaleRotate(shift_limit=0.0625,scale_limit=0.0,rotate_limit=0,interpolation=1,p=0.5),
-                                    ],p = 0.5,only_img = False
-                        ),
-                        L(One_of_aug)(method = [  # transform img, blur(low rato)
-                                    A.Blur(blur_limit=3, p=1),
-                                    A.MedianBlur(blur_limit=3,p = 1),
-                                    ],p = 0.1 , only_img = True
-                         ), 
-                        L(RandomDistort)(brightness_range=0.4, contrast_range=0.4, saturation_range=0.4),
-                        L(GenerateInstanceTargets)(num_classes = seg_num_classes),
-                        L(Normalize)()],
-                    mode='train',
-                    # mosaic=True
-                    ),
-            total_batch_size=16, 
-            worker_num=4, 
-            drop_last=True, 
-            shuffle=True,
-            num_classes=seg_num_classes,
-            is_train=True,
-        ),
+        # segmentation=L(build_segmentation_trainloader)(
+        #     data_set=L(build_segmentation_dataset)(
+        #             dataset_name="BDD100K",
+        #             dataset_root=_root + '/track1_train_data/seg/', 
+        #             transforms=[
+        #                 # L(Mosaic)(prob=0.2, input_dim=[1280, 720]), # seg head no need to use mosaic
+        #                 L(ResizeStepScaling)(min_scale_factor=0.5, max_scale_factor=2.0, scale_step_size=0.25), 
+        #                 L(RandomPaddingCrop)(crop_size=[1280, 720]), 
+        #                 L(RandomHorizontalFlip)(), 
+        #                 L(One_of_aug)(method = [  # transform img and mask, rorate(low rato) or shift(high rato)
+        #                             A.Rotate (limit=5, p=0.1), 
+        #                             A.ShiftScaleRotate(shift_limit=0.0625,scale_limit=0.0,rotate_limit=0,interpolation=1,p=0.5),
+        #                             ],p = 0.5,only_img = False
+        #                 ),
+        #                 L(One_of_aug)(method = [  # transform img, blur(low rato)
+        #                             A.Blur(blur_limit=3, p=1),
+        #                             A.MedianBlur(blur_limit=3,p = 1),
+        #                             ],p = 0.1 , only_img = True
+        #                  ), 
+        #                 L(RandomDistort)(brightness_range=0.4, contrast_range=0.4, saturation_range=0.4),
+        #                 L(GenerateInstanceTargets)(num_classes = seg_num_classes),
+        #                 L(Normalize)()],
+        #             mode='train',
+        #             # mosaic=True
+        #             ),
+        #     total_batch_size=16, 
+        #     worker_num=4, 
+        #     drop_last=True, 
+        #     shuffle=True,
+        #     num_classes=seg_num_classes,
+        #     is_train=True,
+        # ),
 
         fgvc=L(build_vehiclemulti_train_loader_lazy)(
             sampler_config={'sampler_name': 'ClassAwareSampler'},
@@ -188,25 +188,25 @@ dataloader.train=L(MultiTaskDataLoader)(
 
 dataloader.test = [
     
-    L(MultiTaskDataLoader)(
-        cfg=dict(sample_mode='batch',),
-        task_loaders=L(OrderedDict)(
-            segmentation=L(build_segmentation_trainloader)(
-                data_set=L(build_segementation_test_dataset)(
-                        dataset_name="BDD100K",
-                        dataset_root=_root + '/track1_train_data/seg/', 
-                        transforms=[L(Normalize)()],
-                        mode='val',
-                        is_padding=True),
-                total_batch_size=8, 
-                worker_num=4, 
-                drop_last=False, 
-                shuffle=False,
-                num_classes=seg_num_classes,
-                is_train=False,
-            ),
-        ),
-    ),
+    # L(MultiTaskDataLoader)(
+    #     cfg=dict(sample_mode='batch',),
+    #     task_loaders=L(OrderedDict)(
+    #         segmentation=L(build_segmentation_trainloader)(
+    #             data_set=L(build_segementation_test_dataset)(
+    #                     dataset_name="BDD100K",
+    #                     dataset_root=_root + '/track1_train_data/seg/', 
+    #                     transforms=[L(Normalize)()],
+    #                     mode='val',
+    #                     is_padding=True),
+    #             total_batch_size=8, 
+    #             worker_num=4, 
+    #             drop_last=False, 
+    #             shuffle=False,
+    #             num_classes=seg_num_classes,
+    #             is_train=False,
+    #         ),
+    #     ),
+    # ),
 
     L(MultiTaskDataLoader)(
         cfg=dict(sample_mode='batch',),
@@ -356,20 +356,20 @@ model=L(MultiTaskBatchFuse)(
     #     ),
 
     heads=L(OrderedDict)(
-        segmentation=L(Mask2Former)(
-            in_channels= [256, 512, 1024, 2048],
-            num_classes=seg_num_classes,
-            maskformer_num_feature_levels = 4,
-            loss=L(Mask2FormerLoss)(num_classes = seg_num_classes, 
-                                    loss_ce = 1.0,    
-                                    mask_weight = 3.0,
-                                    dice_weight = 2.0,
-                                    cost_loss_ce = 2.0,    
-                                    cost_mask_weight = 5.0,
-                                    cost_dice_weight = 5.0,
-                                    seg_loss_weight = 1.0, 
-                                    ),
-        ),
+        # segmentation=L(Mask2Former)(
+        #     in_channels= [256, 512, 1024, 2048],
+        #     num_classes=seg_num_classes,
+        #     maskformer_num_feature_levels = 4,
+        #     loss=L(Mask2FormerLoss)(num_classes = seg_num_classes, 
+        #                             loss_ce = 1.0,    
+        #                             mask_weight = 3.0,
+        #                             dice_weight = 2.0,
+        #                             cost_loss_ce = 2.0,    
+        #                             cost_mask_weight = 5.0,
+        #                             cost_dice_weight = 5.0,
+        #                             seg_loss_weight = 1.0, 
+        #                             ),
+        # ),
 
         fgvc=L(ClsHead)(
             embedding_size=2048, 
@@ -443,11 +443,11 @@ train.amp.enabled = False
 # data settings
 sample_num = 7000
 epochs=60 # e60 is enough for converging
-dataloader.train.task_loaders.segmentation.total_batch_size = 1 * 8   # 7k samples 100e 
+# dataloader.train.task_loaders.segmentation.total_batch_size = 1 * 8   # 7k samples 100e 
 dataloader.train.task_loaders.fgvc.total_batch_size = 8 * 8  # 8.1k 300e
 dataloader.train.task_loaders.trafficsign.total_batch_size = 1 * 8  # 6.1k  240e
 
-iters_per_epoch = sample_num // dataloader.train.task_loaders.segmentation.total_batch_size
+iters_per_epoch = sample_num // dataloader.train.task_loaders.trafficsign.total_batch_size
 
 max_iters = iters_per_epoch * epochs
 

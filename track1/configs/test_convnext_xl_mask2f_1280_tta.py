@@ -34,26 +34,26 @@ seg_num_classes=19
 
 dataloader.test = [
     
-    L(MultiTaskDataLoader)(
-        cfg=dict(sample_mode='batch',),
-        task_loaders=L(OrderedDict)(
-            segmentation=L(build_segmentation_trainloader)(
-                data_set=L(build_segementation_test_dataset)(
-                        dataset_name="InferDataset",
-                        dataset_root=_root + '/track1_test_data/seg/', 
-                        transforms=[L(Normalize)()],
-                        mode='test',
-                        is_padding=True),
-                total_batch_size=8, 
-                # total_batch_size=4, 
-                worker_num=4, 
-                drop_last=False, 
-                shuffle=False,
-                num_classes=seg_num_classes,
-                is_train=False,
-            ),
-        ),
-    ),
+    # L(MultiTaskDataLoader)(
+    #     cfg=dict(sample_mode='batch',),
+    #     task_loaders=L(OrderedDict)(
+    #         segmentation=L(build_segmentation_trainloader)(
+    #             data_set=L(build_segementation_test_dataset)(
+    #                     dataset_name="InferDataset",
+    #                     dataset_root=_root + '/track1_test_data/seg/', 
+    #                     transforms=[L(Normalize)()],
+    #                     mode='test',
+    #                     is_padding=True),
+    #             total_batch_size=8, 
+    #             # total_batch_size=4, 
+    #             worker_num=4, 
+    #             drop_last=False, 
+    #             shuffle=False,
+    #             num_classes=seg_num_classes,
+    #             is_train=False,
+    #         ),
+    #     ),
+    # ),
 
     L(MultiTaskDataLoader)(
         cfg=dict(sample_mode='batch',),
@@ -124,8 +124,8 @@ dataloader.test = [
 
 dataloader.evaluator = [
     # segmentation
-    L(SegEvaluatorInfer)(
-    ),  # infer mode
+    # L(SegEvaluatorInfer)(
+    # ),  # infer mode
 
     # classification
     L(CommonClasEvaluatorSingleTaskInfer)(
@@ -203,21 +203,21 @@ model=L(MultiTaskBatchFuse)(
         #     ),
         # ),
     heads=L(OrderedDict)(
-        segmentation=L(Mask2Former)(  #采用mask2former
-            in_channels= [256, 512, 1024, 2048],
-            num_classes=seg_num_classes,
-            maskformer_num_feature_levels = 4,
-            # pretrained = _root + '/pretrained/mask2former.pdparams',
-            loss=L(Mask2FormerLoss)(num_classes = seg_num_classes,  #采用mask2former loss
-                                    loss_ce = 1.0,     #计算loss的系数
-                                    mask_weight = 3.0,
-                                    dice_weight = 2.0,
-                                    cost_loss_ce = 2.0,    #计算cost的系数
-                                    cost_mask_weight = 5.0,
-                                    cost_dice_weight = 5.0,
-                                    seg_loss_weight = 1.0, 
-                                    ),
-        ),
+        # segmentation=L(Mask2Former)(  #采用mask2former
+        #     in_channels= [256, 512, 1024, 2048],
+        #     num_classes=seg_num_classes,
+        #     maskformer_num_feature_levels = 4,
+        #     # pretrained = _root + '/pretrained/mask2former.pdparams',
+        #     loss=L(Mask2FormerLoss)(num_classes = seg_num_classes,  #采用mask2former loss
+        #                             loss_ce = 1.0,     #计算loss的系数
+        #                             mask_weight = 3.0,
+        #                             dice_weight = 2.0,
+        #                             cost_loss_ce = 2.0,    #计算cost的系数
+        #                             cost_mask_weight = 5.0,
+        #                             cost_dice_weight = 5.0,
+        #                             seg_loss_weight = 1.0, 
+        #                             ),
+        # ),
         fgvc=L(ClsHead)(
             embedding_size=2048, 
             class_num=196,

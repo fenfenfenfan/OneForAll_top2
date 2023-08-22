@@ -126,7 +126,7 @@ if __name__ == "__main__":
     save_json_path = os.path.join(save_path,f'wbf_0.55filter_{pred_name}')
     wbf_dec_results = one_model_wbf(json_results, score_level=0.01, max_class_id=45, th_nmsiou=0.55, th_score=0.0001, weights=None)
     submit_results = {}
-    submit_results['seg'] = datas['seg']
+    # submit_results['seg'] = datas['seg']
     submit_results['cls'] = datas['cls']
     submit_results['dec'] = wbf_dec_results
     with open(save_json_path, 'w') as f_w:

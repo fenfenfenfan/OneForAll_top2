@@ -38,8 +38,8 @@ class VehicleMultiTaskClassAwareSampler(DistributedBatchSampler):
         # for i in range(len(self.category_imgids)):
         #     counter += len(self.category_imgids[i])
         # self.class_sampler_prob = np.array(counter) / sum(counter)
-        # self.class_sampler_prob = [1.0/len(self.category_imgids) for _ in range(len(self.category_imgids))]
-        self.class_sampler_prob = [1.0/len(self.category_imgids) for _ in range(max(list(self.category_imgids.keys())))]
+        self.class_sampler_prob = [1.0/len(self.category_imgids) for _ in range(len(self.category_imgids))]
+        # self.class_sampler_prob = [1.0/len(self.category_imgids) for _ in range(max(list(self.category_imgids.keys())))]
         
     def __iter__(self):
 

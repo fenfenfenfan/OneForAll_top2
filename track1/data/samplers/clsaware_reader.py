@@ -38,15 +38,19 @@ class VehicleMultiTaskClassAwareSampler(DistributedBatchSampler):
         # for i in range(len(self.category_imgids)):
         #     counter += len(self.category_imgids[i])
         # self.class_sampler_prob = np.array(counter) / sum(counter)
-        self.class_sampler_prob = [1.0/len(self.category_imgids) for _ in range(len(self.category_imgids))]
+        # self.class_sampler_prob = [1.0/len(self.category_imgids) for _ in range(len(self.category_imgids))]
+        self.class_sampler_prob = [1.0/len(self.category_imgids) for _ in range(max(list(self.category_imgids.keys())))]
         
     def __iter__(self):
 
         while True:
             batch_index = []
-            random_categories = list(np.random.choice(list(range(len(self.category_imgids))), 
+            # random_categories = list(np.random.choice(list(range(len(self.category_imgids))), 
+            #                                         self.batch_size, replace=True, 
+            #                                         p=self.class_sampler_prob))
+            random_categories = list(np.random.choice(list(self.category_imgids.keys()), 
                                                     self.batch_size, replace=True, 
-                                                    p=self.class_sampler_prob))
+                                                    p=self.class_sampler_prob))  
             for cls, count in Counter(random_categories).items(): 
                 cur_ids = list(np.random.choice(self.category_imgids[cls], count, replace=False))
                 batch_index.extend(cur_ids)

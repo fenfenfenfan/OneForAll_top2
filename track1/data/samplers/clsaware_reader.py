@@ -52,7 +52,7 @@ class VehicleMultiTaskClassAwareSampler(DistributedBatchSampler):
                                                     self.batch_size, replace=True, 
                                                     p=self.class_sampler_prob))  
             for cls, count in Counter(random_categories).items(): 
-                cur_ids = list(np.random.choice(self.category_imgids[cls], count, replace=False))
+                cur_ids = list(np.random.choice(self.category_imgids[cls], count, replace=True))
                 batch_index.extend(cur_ids)
             if self.shuffle:
                 np.random.RandomState(self.epoch).shuffle(batch_index)

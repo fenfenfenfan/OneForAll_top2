@@ -280,9 +280,22 @@ class COCOInferDataSet(DetDataset):
         self.catid2clsid = dict({catid: i for i, catid in enumerate(cat_ids)})
 
         self.sample_num = sample_num
-        with open(self.anno_path,'r') as f:
-            data = json.load(f)
-        self.images = data["images"]
+        # with open(self.anno_path,'r') as f:
+        #     data = json.load(f)
+        # self.images = data["images"]
+        self.images = []
+        tmp = []
+        annotations = data["annotations"]
+        images_list = data["images"]
+        img2name = {}
+        for img in images_list:
+            img2name[img['id']] = img['file_name']
+        for d in annotations:
+            tmp.append(d['image_id'])
+        tmp = set(tmp)
+        for t in tmp:
+            self.images.append({"file_name":img2name[t],"id":int(t)})
+
 
     def get_anno(self):
         if self.anno_path is None:
@@ -302,8 +315,8 @@ class COCOInferDataSet(DetDataset):
         records = []
         for i in range(len(images)):
             image = images[i]
-            # ct = images_id[i]
-            ct = i
+            ct = images_id[i]
+            # ct = i
             assert image != '' and os.path.isfile(image), \
                     "Image {} not found".format(image)
             if self.sample_num > 0 and ct >= self.sample_num:

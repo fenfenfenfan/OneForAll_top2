@@ -15,6 +15,7 @@
 import os
 import numpy as np
 import logging
+import json
 
 from fastreid.data.datasets.bases import DetDataset
 from fastreid.data.datasets import DATASET_REGISTRY
@@ -279,6 +280,9 @@ class COCOInferDataSet(DetDataset):
         self.catid2clsid = dict({catid: i for i, catid in enumerate(cat_ids)})
 
         self.sample_num = sample_num
+        with open(self.anno_path,'r') as f:
+            data = json.load(f)
+        self.images = data["images"]
 
     def get_anno(self):
         if self.anno_path is None:
@@ -293,17 +297,20 @@ class COCOInferDataSet(DetDataset):
             self.roidbs = self._load_images()
 
     def _load_images(self):
-        images = self.get_test_images()
-        ct = 1
+        images,images_id = self.get_test_images()
+        # ct = 0
         records = []
-        for image in images:
+        for i in range(len(images)):
+            image = images[i]
+            # ct = images_id[i]
+            ct = i
             assert image != '' and os.path.isfile(image), \
                     "Image {} not found".format(image)
             if self.sample_num > 0 and ct >= self.sample_num:
                 break
             rec = {'im_id': np.array([ct]), 'im_file': image}
             self._imid2path[ct] = image
-            ct += 1
+            # ct += 1
             records.append(rec)
         assert len(records) > 0, "No image file found"
         return records
@@ -320,13 +327,15 @@ class COCOInferDataSet(DetDataset):
 
     def get_test_images(self):
         images = list()
-        infer_dir = os.path.join(self.dataset_dir, self.image_dir)
-        with open(infer_dir, 'r') as f:
-            content = f.readlines()
-        for name in content:
-            name = name.strip()
+        images_id = list()
+        # infer_dir = os.path.join(self.dataset_dir, self.image_dir)
+        # with open(infer_dir, 'r') as f:
+        #     content = f.readlines()
+        for img in self.images:
+            name = img["file_name"].strip()
             path = os.path.join(self.dataset_dir, 'test', name)
             images.append(path)
+            images_id.append(int(img["id"]))
 
         # assert infer_dir is None or os.path.isdir(infer_dir), \
         #         "{} is not a directory".format(infer_dir)
@@ -347,4 +356,4 @@ class COCOInferDataSet(DetDataset):
         # assert len(images) > 0, "no image found in {}".format(infer_dir)
         # logger.info("Found {} inference images in total.".format(len(images)))
 
-        return images
+        return images,images_id

@@ -280,8 +280,8 @@ class COCOInferDataSet(DetDataset):
         self.catid2clsid = dict({catid: i for i, catid in enumerate(cat_ids)})
 
         self.sample_num = sample_num
-        # with open(self.anno_path,'r') as f:
-        #     data = json.load(f)
+        with open(self.anno_path,'r') as f:
+            data = json.load(f)
         # self.images = data["images"]
         self.images = []
         tmp = []

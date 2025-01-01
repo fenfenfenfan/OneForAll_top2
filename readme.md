@@ -4,7 +4,7 @@
 
 ### 1.1 算法结构框图
 
-![model](https://www.zjunjie.top/mdimages/model.png)
+![model](./mytools/OneForALL.png)
 
 ### 1.2 思路步骤详述
 
